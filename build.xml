@@ -1,0 +1,81 @@
+<project name="ctm" basedir="." default="run">
+
+    <echo message="Building project using Java: ${java.version}"/>
+
+    <fail message="Project requires java version 1.8 or higher">
+        <condition>
+            <matches pattern="1\.(?:[0-7])\.*" string="${java.version}"/>
+        </condition>
+    </fail>
+
+    <property name="build.source" value="src"/>
+    <property name="build.lib" value="lib"/>
+    <property name="build.dir" value="build"/>
+    <property name="build.jar" value="${build.dir}/lib/ctm.jar"/>
+    <property name="build.test_results_dir" value="${build.dir}/test_results"/>
+    <path id="external.libs">
+        <fileset
+                dir="${build.lib}"
+                excludes="test/*.jar"
+                includes="**/*.jar" />
+    </path>
+    <path id="test.path">
+        <fileset dir="${build.lib}"/>
+    </path>
+
+    <target name="clean">
+        <echo message="Cleaning directories"/>
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <echo message="Compiling project"/>
+        <mkdir dir="${build.dir}"/>
+
+        <javac classpathref="test.path"
+               srcdir="${build.source}"
+               destdir="${build.dir}"
+               excludes="**/test/**"
+               includeantruntime="false"/>
+    </target>
+
+    <target name="tests" depends="clean">
+        <echo message="Running JUnit tests"/>
+        <mkdir dir="${build.test_results_dir}"/>
+        <junit printsummary="yes"
+               haltonfailure="yes"
+               fork="true"
+               forkmode="perBatch">
+            <formatter type="plain"/>
+            <classpath refid="test.path"/>
+            <batchtest todir="${build.test_results_dir}">
+                <fileset dir="${build.source}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="jar" depends="compile">
+        <echo message="Building console application"/>
+        <delete file="${build.jar}"/>
+        <copy file="${build.source}/META-INF/MANIFEST.MF"
+              todir="${build.dir}/META-INF"/>
+        <jar manifest="${build.dir}/META-INF/MANIFEST.MF"
+             jarfile="${build.jar}">
+            <fileset dir="${build.dir}"
+                     excludes="**/test/**"/>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <echo message="Running console application"/>
+        <java classname="com.thoughtworks.apodznoev.ctm.ConsoleLauncher">
+            <classpath>
+                <path refid="external.libs"/>
+                <path location="${build.jar}"/>
+            </classpath>
+        </java>
+    </target>
+
+</project>
