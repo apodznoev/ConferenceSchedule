@@ -13,6 +13,8 @@
     <property name="build.dir" value="build"/>
     <property name="build.jar" value="${build.dir}/lib/ctm.jar"/>
     <property name="build.test_results_dir" value="${build.dir}/test_results"/>
+    <property name="main_class" value="com.thoughtworks.apodznoev.ctm.console.ConsoleLauncher"/>
+
     <path id="external.libs">
         <fileset
                 dir="${build.lib}"
@@ -21,6 +23,7 @@
     </path>
     <path id="test.path">
         <fileset dir="${build.lib}"/>
+        <fileset dir="${build.lib}/test"/>
     </path>
 
     <target name="clean">
@@ -35,11 +38,10 @@
         <javac classpathref="test.path"
                srcdir="${build.source}"
                destdir="${build.dir}"
-               excludes="**/test/**"
                includeantruntime="false"/>
     </target>
 
-    <target name="tests" depends="clean">
+    <target name="tests" depends="compile">
         <echo message="Running JUnit tests"/>
         <mkdir dir="${build.test_results_dir}"/>
         <junit printsummary="yes"
@@ -47,10 +49,13 @@
                fork="true"
                forkmode="perBatch">
             <formatter type="plain"/>
-            <classpath refid="test.path"/>
+            <classpath>
+                <path refid="test.path"/>
+                <path location="${build.dir}"/>
+            </classpath>
             <batchtest todir="${build.test_results_dir}">
-                <fileset dir="${build.source}">
-                    <include name="**/*Test.java"/>
+                <fileset dir="${build.dir}">
+                    <include name="**/*Test.class"/>
                 </fileset>
             </batchtest>
         </junit>
@@ -70,7 +75,7 @@
 
     <target name="run" depends="jar">
         <echo message="Running console application"/>
-        <java classname="com.thoughtworks.apodznoev.ctm.ConsoleLauncher">
+        <java classname="${main_class}">
             <classpath>
                 <path refid="external.libs"/>
                 <path location="${build.jar}"/>
