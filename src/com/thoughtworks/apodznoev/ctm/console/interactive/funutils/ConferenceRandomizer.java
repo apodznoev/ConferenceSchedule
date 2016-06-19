@@ -20,7 +20,7 @@ public final class ConferenceRandomizer {
     private static final List<String> SUBJECTS = Arrays.asList(
             "Java", "supply chain", "coding", "principles",
             "patterns", "Java", "OpenSource", "C++", "practices",
-            "FinTech", "banking", "DevOps", "hiring",
+            "FinTech", "banking", "DevOps", "hiring", "overdoing",
             "how to", "wearable", "tech", "security"
     );
     private static final List<String> PLACES = Arrays.asList(

@@ -39,7 +39,6 @@ public class ConsoleLauncher {
         while (true) {
             String input = console.readLine();
             if (input == null || EXIT_COMMAND.equals(input)) {
-                writer.println("Thanks for using Conference Track Management application!");
                 break;
             }
 
@@ -54,7 +53,8 @@ public class ConsoleLauncher {
                 break;
         }
 
+        writer.println("Thanks for using Conference Track Management application!");
+
         writer.close();
-        errorWriter.close();
     }
 }
