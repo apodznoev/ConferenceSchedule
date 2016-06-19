@@ -51,7 +51,7 @@ public class CreateScheduleStep extends AbstractStep {
     @Override
     public String getInitialQuestion() {
         return "Do you wish to create a Conference Schedule from file: '"
-                + lecturesFile.toString() + "'?\n" + getYesNoQuestion();
+                + lecturesFile.toAbsolutePath().normalize().toString() + "'?\n" + getYesNoQuestion();
     }
 
     @Override
@@ -103,6 +103,8 @@ public class CreateScheduleStep extends AbstractStep {
         if (!generateSchedule(parsedLectures)) {
             failed = true;
         }
+
+        console.println("Schedule successfully composed");
     }
 
     private boolean generateSchedule(List<Lecture> lectures) {
