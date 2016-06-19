@@ -13,10 +13,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Class-holder for options of the conference schedule to be composed.
+ * Determines amount of breaks, presence of closing event, schedule start
+ * and other stuff.
+ *
  * @author apodznoev
  * @since 19/06/16
  */
 public class ConferenceScheduleComposingOptions {
+    private static final ConferenceScheduleComposingOptions BASIC_OPTIONS =
+            new Builder()
+                    .randomize(false)
+                    .setConferenceStart(LocalTime.of(9, 0))
+                    .addBreak(LocalTime.of(12, 0), new Lunch(60))
+                    .addFinalEvent(LocalTime.of(16, 0), LocalTime.of(17, 0), new Networking())
+                    .build();
+
     private final boolean randomize;
     private final LocalTime conferenceStart;
     private final List<BreakOption> breaks;
@@ -33,6 +45,9 @@ public class ConferenceScheduleComposingOptions {
         this.finalEvent = finalEvent;
     }
 
+    /**
+     * Indicates if events can be shuffled after schedule composing.
+     */
     public boolean isRandomize() {
         return randomize;
     }
@@ -40,7 +55,6 @@ public class ConferenceScheduleComposingOptions {
     public LocalTime getConferenceStart() {
         return conferenceStart;
     }
-
 
     private void validateOptions(LocalTime conferenceStart,
                                  List<BreakOption> breaks,
@@ -90,39 +104,65 @@ public class ConferenceScheduleComposingOptions {
 
     }
 
+    /**
+     * Gets basic options for schedule generation - with one {@link Lunch},
+     * ending {@link Networking} and not very early start.
+     */
     public static ConferenceScheduleComposingOptions basicOptions() {
-        return new Builder()
-                .randomize(false)
-                .setConferenceStart(LocalTime.of(9, 0))
-                .addBreak(LocalTime.of(12, 0), new Lunch(60))
-                .addFinalEvent(LocalTime.of(16, 0), LocalTime.of(17, 0), new Networking())
-                .build();
+        return BASIC_OPTIONS;
     }
 
+    /**
+     * Gets amount of breaks during single track
+     *
+     * @return non-negative integer
+     */
     public int getBreaksCount() {
         return breaks.size();
     }
 
+    /**
+     * Gets break for given index
+     */
     public Break getBreak(int i) {
         return breaks.get(i).event;
     }
 
+    /**
+     * Gets day time when break with given index starts
+     */
     public LocalTime getBreakStart(int i) {
         return breaks.get(i).start;
     }
 
+    /**
+     * Gets the minimal time, when closing event can take place.
+     * In case if closing event is not provided - returns latest available time.
+     * Just for the sake of generation simplicity right now.
+     */
     public LocalTime getFinalEventMinStart() {
         return finalEvent == null ? LocalTime.of(23, 59) : finalEvent.floatingStartMin;
     }
 
+    /**
+     * Gets the latest time, when closing event will take place.
+     * In case if closing event is not provided - returns latest available time.
+     * Just for the sake of generation simplicity also.
+     */
     public LocalTime getFinalEventLastStart() {
         return finalEvent == null ? LocalTime.of(23, 59) : finalEvent.floatingStartMax;
     }
 
+    /**
+     * Gets all configured breaks
+     */
     public List<Break> getBreaks() {
         return breaks.stream().map(breakOption -> breakOption.event).collect(Collectors.toList());
     }
 
+    /**
+     * Gets closing event if provided.
+     */
     public ClosingEvent getFinalEvent() {
         return finalEvent == null ? null : finalEvent.event;
     }
@@ -133,8 +173,11 @@ public class ConferenceScheduleComposingOptions {
         private List<BreakOption> breaks = new ArrayList<>();
         private FinalEventOption finalEventOption;
 
+        /**
+         * In case of {@code true } events will be shuffled after schedule composing.
+         */
         public Builder randomize(boolean randomize) {
-            this.randomize = true;
+            this.randomize = randomize;
             return this;
         }
 
@@ -143,11 +186,24 @@ public class ConferenceScheduleComposingOptions {
             return this;
         }
 
+        /**
+         * Adds break at given time
+         *
+         * @param breakTime       time of break
+         * @param conferenceBreak break event
+         */
         public Builder addBreak(LocalTime breakTime, Break conferenceBreak) {
             breaks.add(new BreakOption(breakTime, conferenceBreak));
             return this;
         }
 
+        /**
+         * Adds final event which will be placed in given interval
+         *
+         * @param floatingStartMin minimal time, when closing event can take place
+         * @param floatingStartMax maximal time, before which (inclusive) event will take place
+         * @param event closing event
+         */
         public Builder addFinalEvent(LocalTime floatingStartMin,
                                      LocalTime floatingStartMax,
                                      ClosingEvent event) {

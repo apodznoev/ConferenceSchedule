@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Enum which describes all possible allowed actions and their flow in interactive console regime,
+ * Enum which describes all possible allowed console actions and their flow in interactive console regime,
  * using {@link InteractiveConsoleProcessor} class.
  *
  * @author apodznoev

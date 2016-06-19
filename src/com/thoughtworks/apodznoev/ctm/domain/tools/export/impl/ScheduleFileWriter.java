@@ -19,6 +19,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
+ * Concrete implementation for file writer which is responsible for writing
+ * of {@link ConferenceSchedule} instances in human-readable form.
+ *
  * @author apodznoev
  * @since 19/06/16
  */
@@ -26,7 +29,7 @@ public class ScheduleFileWriter implements FileObjectWriter<ConferenceSchedule> 
     private final DateTimeFormatter dateFormatter;
     private final DateTimeFormatter dayTimeFormatter;
 
-    public ScheduleFileWriter(DateTimeFormatter dateFormatter, DateTimeFormatter dayTimeFormatter) {
+    ScheduleFileWriter(DateTimeFormatter dateFormatter, DateTimeFormatter dayTimeFormatter) {
         this.dateFormatter = dateFormatter;
         this.dayTimeFormatter = dayTimeFormatter;
     }

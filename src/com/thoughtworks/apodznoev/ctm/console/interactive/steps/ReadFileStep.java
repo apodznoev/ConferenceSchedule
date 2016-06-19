@@ -11,6 +11,9 @@ import java.nio.file.*;
 import java.text.DecimalFormat;
 
 /**
+ * Step which asks user for file location and checks if it exists and can be read.
+ * Also asks for confirmation in case if file size too big(I don't know, why I've written it).
+ *
  * @author apodznoev
  * @since 18/06/16
  */
@@ -45,7 +48,7 @@ public class ReadFileStep extends AbstractStep {
     public void doStep(String userInput) {
         if (stepState == CurrentState.SIZE_CONFIRMATION) {
             boolean confirmationReceived = handleFileSizeConfirmation(userInput);
-            if(!confirmationReceived)
+            if (!confirmationReceived)
                 return;
 
             userInput = lastInput;
@@ -71,7 +74,7 @@ public class ReadFileStep extends AbstractStep {
         stepState = CurrentState.NORMAL;
         boolean ignoreFileSize = parseYesNo(yesNoAnswer);
 
-        if (!ignoreFileSize){
+        if (!ignoreFileSize) {
             console.println(getInitialQuestion());
             return false;
         }

@@ -17,7 +17,7 @@ public class InteractiveConsoleProcessorTest {
     @Before
     public void setUp() throws Exception {
         processor = new InteractiveConsoleProcessor(
-                new PrintWriter(System.out), new PrintWriter(System.err)
+                new PrintWriter(System.out)
         );
 
     }

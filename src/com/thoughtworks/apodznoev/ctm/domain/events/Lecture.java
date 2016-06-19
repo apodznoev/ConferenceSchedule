@@ -1,6 +1,8 @@
 package com.thoughtworks.apodznoev.ctm.domain.events;
 
 /**
+ * Class representing some report during conference.
+ *
  * @author apodznoev
  * @since 18/06/16
  */
@@ -25,7 +27,7 @@ public class Lecture implements Event {
         return durationMinutes;
     }
 
-    public String getSpeaker(){
+    public String getSpeaker() {
         return speaker;
     }
 

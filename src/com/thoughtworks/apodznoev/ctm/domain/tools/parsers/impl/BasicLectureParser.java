@@ -5,6 +5,10 @@ import com.thoughtworks.apodznoev.ctm.domain.tools.parsers.LectureParseException
 import com.thoughtworks.apodznoev.ctm.domain.tools.parsers.LectureParser;
 
 /**
+ * Concrete implementation of parser which parses the line of view:
+ * 'Title \d+min' or 'Title lightning' to {@link Lecture}.
+ * Will raise an exception if given format is not followed.
+ *
  * @author apodznoev
  * @since 19/06/16
  */
@@ -37,7 +41,7 @@ public class BasicLectureParser implements LectureParser {
         }
 
         if (!duration.contains(MINUTES_KEYWORD)) {
-            throw new LectureParseException("Cannot find minutes keyword in '" + duration+"'");
+            throw new LectureParseException("Cannot find minutes keyword in '" + duration + "'");
         }
 
         if (!duration.endsWith(MINUTES_KEYWORD)) {

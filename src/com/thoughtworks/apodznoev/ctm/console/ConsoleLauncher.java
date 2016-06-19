@@ -6,6 +6,9 @@ import java.io.Console;
 import java.io.PrintWriter;
 
 /**
+ * Main entry point for application.
+ * Expects that was launched using console directly without stream redirection and not as daemon.
+ *
  * @author apodznoev
  * @since 17/06/16
  */
@@ -22,7 +25,7 @@ public class ConsoleLauncher {
         }
         PrintWriter writer = console.writer();
         PrintWriter errorWriter = new PrintWriter(System.err);
-        InteractiveConsoleProcessor processor = new InteractiveConsoleProcessor(writer, errorWriter);
+        InteractiveConsoleProcessor processor = new InteractiveConsoleProcessor(writer);
 
         writer.println("Welcome to Conference Track Management application!");
         writer.println("This application will help you to create your perfect schedule for any (almost) conference " +
@@ -43,7 +46,6 @@ public class ConsoleLauncher {
             try {
                 processor.processInput(input);
             } catch (Exception e) {
-                e.printStackTrace();
                 writer.println("Unexpected exception, will terminate immediately");
                 break;
             }

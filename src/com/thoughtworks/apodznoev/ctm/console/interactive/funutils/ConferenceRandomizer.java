@@ -15,11 +15,12 @@ import java.util.*;
 public final class ConferenceRandomizer {
     private static final List<String> BUZZ_WORDS = Arrays.asList(
             "effective", "expert", "ultimate", "architecture", "strategic",
-            "leading"
+            "leading", "innovative", "quantum", "modern", "best"
     );
     private static final List<String> SUBJECTS = Arrays.asList(
             "Java", "supply chain", "coding", "principles",
-            "patterns", "Java", "OpenSource",
+            "patterns", "Java", "OpenSource", "C++", "practices",
+            "FinTech", "banking", "DevOps", "hiring",
             "how to", "wearable", "tech", "security"
     );
     private static final List<String> PLACES = Arrays.asList(
@@ -31,11 +32,11 @@ public final class ConferenceRandomizer {
     );
     private static final List<String> ADJECTIVES = Arrays.asList(
             "grand", "open", "internal", "outer", "shuddering",
-            "private", "public"
+            "private", "public", "local", "upper", "side"
     );
     private static final List<String> ROOMS = Arrays.asList(
             "Room", "Hall", "Basement", "Court", "Roof",
-            "Swimming Pool", "Quarters"
+            "Swimming Pool", "Quarters", "building"
     );
     private static final Random rand = new Random(System.currentTimeMillis());
 

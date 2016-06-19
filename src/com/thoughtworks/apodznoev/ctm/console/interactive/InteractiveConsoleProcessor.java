@@ -13,6 +13,12 @@ import java.util.Set;
 
 /**
  * Class responsible for handling user's input in interactive question-answer mode.
+ * All interaction is built using such-called 'steps'. Every step constructs some logical
+ * unit from user's input and passes it later, to next step as it's configured in
+ * {@link StepType} scheme.
+ * </p>
+ * In case if some step failed, step back will be performed.
+ * In case if final step finished, console will be terminated. (actually in can be enhances to return to first step)
  *
  * @author apodznoev
  * @since 17/06/16
@@ -20,7 +26,6 @@ import java.util.Set;
 public class InteractiveConsoleProcessor {
     private final StepsFactory stepsFactory;
     private final PrintWriter console;
-    private final PrintWriter errorOut;
     private CurrentState currentState;
     private InteractiveStep currentStep;
     private Map<Integer, StepType> nextStepChoice;
@@ -30,10 +35,9 @@ public class InteractiveConsoleProcessor {
     /**
      * @param writer whose data consumed by user.
      */
-    public InteractiveConsoleProcessor(PrintWriter writer, PrintWriter errOut) {
+    public InteractiveConsoleProcessor(PrintWriter writer) {
         this.stepsFactory = new SingleStepPerTypeFactory(writer);
         this.console = writer;
-        this.errorOut = errOut;
         this.currentState = CurrentState.DO_STEP;
         this.currentStep = new ReadFileStep(writer);
     }
@@ -60,21 +64,24 @@ public class InteractiveConsoleProcessor {
         }
 
         if (currentState == CurrentState.DO_STEP) {
+            //just repeat step
             currentStep.doStep(input);
 
-            if (currentStep.isFailed()) {
+            if (currentStep.isFailed()) {//user aborted current step, try to return back
                 returnToPreviousStep();
                 return;
             }
 
-            if (!currentStep.isFinished()) {
+            if (!currentStep.isFinished()) {//just continue this step again
                 return;
             }
 
+            //switch to next step
             processFinishedStep();
             return;
         }
 
+        //there are multiple next step options, handling user's choice
         if (currentState == CurrentState.CHOOSE_NEXT_STEP) {
             processStepChoice(input);
         }
@@ -144,7 +151,7 @@ public class InteractiveConsoleProcessor {
 
     private void returnToPreviousStep() {
         console.println("Returning to previous step");
-        if(restorePoint == null) {
+        if (restorePoint == null) {
             console.println("Unfortunately, return to previous step is not available, " +
                     "will terminate execution.");
             finish();

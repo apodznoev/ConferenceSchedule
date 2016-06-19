@@ -16,6 +16,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 /**
+ * Concrete implementation for console writer which is responsible for writing
+ * of {@link ConferenceSchedule} instances in human-readable form.
+ *
  * @author apodznoev
  * @since 19/06/16
  */
@@ -23,10 +26,9 @@ public class ScheduleConsoleWriter implements ConsoleObjectWriter<ConferenceSche
     private final DateTimeFormatter dateFormat;
     private final DateTimeFormatter daytimeFormat;
 
-    //that can be replaced with configurable factories in the future
-    public ScheduleConsoleWriter(WriteOptions writeOptions) {
-        this.dateFormat = writeOptions.getDateFormatter();
-        this.daytimeFormat = writeOptions.getDayTimeFormatter();
+    ScheduleConsoleWriter(DateTimeFormatter dateFormatter, DateTimeFormatter dayTimeFormatter) {
+        this.dateFormat = dateFormatter;
+        this.daytimeFormat = dayTimeFormatter;
     }
 
     @Override

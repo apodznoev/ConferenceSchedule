@@ -11,11 +11,6 @@ public class Networking implements ClosingEvent {
     }
 
     @Override
-    public int getDurationMinutes() {
-        return UNBOUNDED_DURATION;
-    }
-
-    @Override
     public String toString() {
         return "Networking{}";
     }

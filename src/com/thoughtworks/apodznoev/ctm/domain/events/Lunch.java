@@ -1,6 +1,8 @@
 package com.thoughtworks.apodznoev.ctm.domain.events;
 
 /**
+ * Mostly happening in the middle of day.
+ *
  * @author apodznoev
  * @since 18/06/16
  */

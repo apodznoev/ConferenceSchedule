@@ -3,6 +3,8 @@ package com.thoughtworks.apodznoev.ctm.domain;
 import java.time.LocalDate;
 
 /**
+ * Just a holder for conference meta info.
+ *
  * @author apodznoev
  * @since 19/06/16
  */

@@ -104,14 +104,16 @@ public class CreateScheduleStep extends AbstractStep {
             failed = true;
         }
 
-        console.println("Schedule successfully composed");
+        if (!failed) {
+            console.println("Schedule successfully composed");
+        }
     }
 
     private boolean generateSchedule(List<Lecture> lectures) {
         try {
             //todo validation of same-title lectures omitted for now
             result = scheduleComposer.composeSchedule(getInfo(), lectures);
-        } catch (ConferenceScheduleComposeException e){
+        } catch (ConferenceScheduleComposeException e) {
             console.println(e.getMessage());
             return false;
         }

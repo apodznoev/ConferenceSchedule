@@ -3,21 +3,20 @@ package com.thoughtworks.apodznoev.ctm.console.interactive.steps;
 import com.thoughtworks.apodznoev.ctm.console.interactive.StepType;
 import com.thoughtworks.apodznoev.ctm.console.interactive.stepdata.ScheduleStepData;
 import com.thoughtworks.apodznoev.ctm.console.interactive.stepdata.StepData;
-import com.thoughtworks.apodznoev.ctm.domain.ConferenceInfo;
 import com.thoughtworks.apodznoev.ctm.domain.schedules.ConferenceSchedule;
 import com.thoughtworks.apodznoev.ctm.domain.tools.export.ConsoleObjectWriter;
 import com.thoughtworks.apodznoev.ctm.domain.tools.export.FileObjectWriter;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
+ * Step allows to export schedule from previous step either to file, either
+ * to console.
+ *
  * @author apodznoev
  * @since 18/06/16
  */

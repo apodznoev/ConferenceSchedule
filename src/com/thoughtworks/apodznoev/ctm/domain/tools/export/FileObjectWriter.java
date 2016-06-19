@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 /**
+ * Interface for classes responsible for writing the generic class objects
+ * to provided file.
+ *
  * @author apodznoev
  * @since 19/06/16
  */

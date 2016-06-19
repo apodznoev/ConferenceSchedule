@@ -20,7 +20,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * todo
+ * Factory for interactive step.
+ * It's a main class which configures what exactly will be done at every step of
+ * interactive console.
  *
  * @author apodznoev
  * @since 18/06/16

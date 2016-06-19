@@ -20,6 +20,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
+ * Main class for composing {@link ConferenceSchedule} from set of lectures.
+ * It's a single-day implementation, thus all produced schedules will have only one day. i.e.
+ * {@link ConferenceSchedule#getDaySchedules()} will always have one element.
+ * <p>
+ * Uses greedy algorithm to distribute lectures between {@link Break} events, producing
+ * new {@link TrackSchedule} in case if previous cannot handle any event anymore.
+ *
  * @author apodznoev
  * @since 19/06/16
  */
@@ -101,7 +108,7 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
                     break;
                 }
 
-                //track cannot hold any lecture anymore, but there are still not distributed ones
+                //track cannot hold any lecture anymore, but there are still not distributed lectures
                 trackBuilders.add(tb = new TrackBuilder(options));
                 resetIter(it);
                 continue;
@@ -113,8 +120,9 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
             }
         }
 
-        if (options.isRandomize())
+        if (options.isRandomize()) {//shuffle to not kill visitors by multiple long lectures in row
             trackBuilders.forEach(TrackBuilder::randomize);
+        }
 
         return trackBuilders.stream()
                 .map(TrackBuilder::build)
@@ -171,12 +179,12 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
             }
         }
 
-        public void randomize() {
+        void randomize() {
             //can safely reorder events within single session
             sessions.stream().forEach(session -> Collections.shuffle(session.lectures));
         }
 
-        public TrackSchedule build() {
+        TrackSchedule build() {
             TreeMap<LocalTime, Event> schedule = new TreeMap<>();
             LocalTime start = trackStart;
             int breakNumber = 0;

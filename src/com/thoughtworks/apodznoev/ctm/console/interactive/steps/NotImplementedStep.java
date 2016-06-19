@@ -5,6 +5,8 @@ import com.thoughtworks.apodznoev.ctm.console.interactive.stepdata.StepData;
 import java.io.PrintWriter;
 
 /**
+ * Too many features, too low time.
+ *
  * @author apodznoev
  * @since 19/06/16
  */

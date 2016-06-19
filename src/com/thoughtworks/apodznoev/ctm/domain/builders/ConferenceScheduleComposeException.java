@@ -1,6 +1,8 @@
 package com.thoughtworks.apodznoev.ctm.domain.builders;
 
 /**
+ * Exception which can be raised during schedule composing
+ *
  * @author apodznoev
  * @since 19/06/16
  */

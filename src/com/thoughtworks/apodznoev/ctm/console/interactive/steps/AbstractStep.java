@@ -3,6 +3,8 @@ package com.thoughtworks.apodznoev.ctm.console.interactive.steps;
 import java.io.PrintWriter;
 
 /**
+ * Just a skeleton to reduce boiler plate in subclasses
+ *
  * @author apodznoev
  * @since 18/06/16
  */
