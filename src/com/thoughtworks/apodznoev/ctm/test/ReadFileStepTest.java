@@ -1,13 +1,11 @@
 package com.thoughtworks.apodznoev.ctm.test;
 
-import com.thoughtworks.apodznoev.ctm.console.interactive.InteractiveConsoleProcessor;
 import com.thoughtworks.apodznoev.ctm.console.interactive.stepdata.FilePathStepData;
 import com.thoughtworks.apodznoev.ctm.console.interactive.steps.ReadFileStep;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.PrintWriter;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -58,10 +56,10 @@ public class ReadFileStepTest {
         assertNotNull(step.getCollectedData());
         assertTrue(step.getCollectedData() instanceof FilePathStepData);
         FilePathStepData stepData = (FilePathStepData) step.getCollectedData();
-        assertNotNull(stepData.getFile());
-        assertTrue(stepData.getFile().exists());
-        assertFalse(stepData.getFile().isDirectory());
-        assertTrue(stepData.getFile().canRead());
+        assertNotNull(stepData.getFilePath());
+        assertTrue(stepData.getFilePath().toFile().exists());
+        assertFalse(stepData.getFilePath().toFile().isDirectory());
+        assertTrue(stepData.getFilePath().toFile().canRead());
     }
 
     @Test

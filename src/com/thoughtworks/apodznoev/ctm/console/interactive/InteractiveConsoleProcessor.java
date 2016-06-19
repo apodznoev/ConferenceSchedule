@@ -24,6 +24,7 @@ public class InteractiveConsoleProcessor {
     private CurrentState currentState;
     private InteractiveStep currentStep;
     private Map<Integer, StepType> nextStepChoice;
+    private RestorePoint restorePoint;
 
     /**
      * @param writer whose data consumed by user.
@@ -59,6 +60,12 @@ public class InteractiveConsoleProcessor {
 
         if (currentState == CurrentState.DO_STEP) {
             currentStep.doStep(input);
+
+            if (currentStep.isFailed()) {
+                returnToPreviousStep();
+                return;
+            }
+
             if (!currentStep.isFinished()) {
                 return;
             }
@@ -125,7 +132,7 @@ public class InteractiveConsoleProcessor {
         } catch (NumberFormatException ignored) {
         }
 
-        if(!nextStepChoice.containsKey(nextStepId)){
+        if (!nextStepChoice.containsKey(nextStepId)) {
             console.println("Cannot recognize next step, please choose one of offered");
             printNextStepChoice();
             return;
@@ -134,12 +141,29 @@ public class InteractiveConsoleProcessor {
         switchToNextStep(nextStepChoice.get(nextStepId));
     }
 
+    private void returnToPreviousStep() {
+        console.println("Returning to previous step");
+        if(restorePoint == null) {
+            console.println("Unfortunately, return to previous step is not available, " +
+                    "will terminate execution.");
+            finish();
+            return;
+        }
+
+        currentStep = restorePoint.createStepToRestore();
+        currentState = CurrentState.DO_STEP;
+        //we support only one step back right now
+        restorePoint = null;
+        console.println(currentStep.getInitialQuestion());
+    }
+
     private void switchToNextStep(StepType nextStepType) {
         InteractiveStep nextStepImpl = findSuitableImplementation(nextStepType);
         StepData collectedData = currentStep.getCollectedData();
         currentStep = nextStepImpl;
         currentStep.supplyInitialData(collectedData);
         currentState = CurrentState.DO_STEP;
+        restorePoint = new RestorePoint(nextStepType, collectedData);
         console.println(currentStep.getInitialQuestion());
     }
 
@@ -162,5 +186,24 @@ public class InteractiveConsoleProcessor {
         DO_STEP,
         CHOOSE_NEXT_STEP,
         FINISHED
+    }
+
+    /**
+     * Class allows to make step back from current state.
+     */
+    private class RestorePoint {
+        private final StepType stepType;
+        private final StepData stepData;
+
+        private RestorePoint(StepType stepType, StepData stepData) {
+            this.stepType = stepType;
+            this.stepData = stepData;
+        }
+
+        private InteractiveStep createStepToRestore() {
+            InteractiveStep restoreStep = findSuitableImplementation(stepType);
+            restoreStep.supplyInitialData(stepData);
+            return restoreStep;
+        }
     }
 }

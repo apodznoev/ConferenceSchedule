@@ -46,13 +46,22 @@ public interface InteractiveStep {
     void doStep(String userInput);
 
     /**
-     * Checks if given step is finished and collected data is ready to
+     * Checks if given step is successfully finished and collected data is ready to
      * be passed to next step.
      *
      * @return {@code true} in case if given step finished and no {@link #doStep(String)}
      * invocations expected, {@code false} otherwise
      */
     boolean isFinished();
+
+    /**
+     * Checks if given step failed to finish and return to previous step should be performed.
+     *
+     * @return {@code true} in case if step completion failed by internal reasons
+     * of by user's choice and no additional {@link #doStep(String)}
+     * invocations expected, {@code false} otherwise
+     */
+    boolean isFailed();
 
     /**
      * Gets data collected by given step and possibly required by next step.

@@ -1,18 +1,18 @@
 package com.thoughtworks.apodznoev.ctm.console.interactive.stepdata;
 
-import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author apodznoev
  * @since 18/06/16
  */
 public class FilePathStepData implements StepData {
-    private final File file;
-    public FilePathStepData(File file) {
+    private final Path file;
+    public FilePathStepData(Path file) {
         this.file = file;
     }
 
-    public File getFile() {
+    public Path getFilePath() {
         return file;
     }
 }
