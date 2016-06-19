@@ -55,7 +55,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(20, "20#2", LocalTime.of(1, 0)),
                 new Check(10, "10#0", LocalTime.of(1, 20)),
                 new Check(10, "10#3", LocalTime.of(1, 30)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(1, 40))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(1, 40))
         );
     }
 
@@ -76,7 +76,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(22, "22#4", LocalTime.of(11, 47)),
                 new Check(11, "11#3", LocalTime.of(12, 9)),
                 new Check(5, "5#0", LocalTime.of(12, 20)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(14, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(14, 0))
         );
     }
 
@@ -95,13 +95,13 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(95, "95#3", LocalTime.of(7, 30)),
                 new Check(60, "60#1", LocalTime.of(9, 5)),
                 new Check(25, "25#4", LocalTime.of(10, 5)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(10, 30))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(10, 30))
         );
 
         checkSchedule(schedule.getDaySchedules().get(0).getTracks().get(1),
                 new Check(49, "49#2", LocalTime.of(7, 30)),
                 new Check(10, "10#0", LocalTime.of(8, 19)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(10, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(10, 0))
         );
     }
 
@@ -122,13 +122,13 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(30, "Lunch", LocalTime.of(14, 0)),
                 new Check(90, "90#5", LocalTime.of(14, 30)),
                 new Check(30, "30#2", LocalTime.of(16, 0)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(16, 30))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(16, 30))
         );
 
         checkSchedule(schedule.getDaySchedules().get(0).getTracks().get(1),
                 new Check(60, "60#4", LocalTime.of(11, 10)),
                 new Check(30, "Lunch", LocalTime.of(14, 0)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(16, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(16, 0))
         );
     }
 
@@ -151,7 +151,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(45, "Lunch", LocalTime.of(14, 0)),
                 new Check(75, "75#1", LocalTime.of(14, 45)),
                 new Check(60, "60#5", LocalTime.of(16, 00)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(17, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(17, 0))
         );
 
         checkSchedule(schedule.getDaySchedules().get(0).getTracks().get(1),
@@ -159,7 +159,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(30, "Lunch", LocalTime.of(12, 0)),
                 new Check(5, "5#3", LocalTime.of(12, 30)),
                 new Check(45, "Lunch", LocalTime.of(14, 0)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(16, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(16, 0))
         );
     }
 
@@ -186,7 +186,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(45, "45#3", LocalTime.of(15, 0)),
                 new Check(45, "45#4", LocalTime.of(15, 45)),
                 new Check(30, "30#2", LocalTime.of(16, 30)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(17, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(17, 0))
         );
 
         checkSchedule(schedule.getDaySchedules().get(0).getTracks().get(1),
@@ -195,7 +195,7 @@ public class SingleDayConferenceScheduleComposerTest {
                 new Check(60, "Lunch", LocalTime.of(12, 0)),
                 new Check(45, "45#10", LocalTime.of(13, 0)),
                 new Check(30, "30#9", LocalTime.of(13, 45)),
-                new Check(Event.UNBOUNDED_DURATION, "Networking", LocalTime.of(16, 0))
+                new Check(Event.UNBOUNDED_DURATION, "Networking Event" , LocalTime.of(16, 0))
         );
 
     }
