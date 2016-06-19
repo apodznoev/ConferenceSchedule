@@ -25,6 +25,7 @@ public class InteractiveConsoleProcessor {
     private InteractiveStep currentStep;
     private Map<Integer, StepType> nextStepChoice;
     private RestorePoint restorePoint;
+    private StepData lastSuppliedData;
 
     /**
      * @param writer whose data consumed by user.
@@ -152,6 +153,7 @@ public class InteractiveConsoleProcessor {
 
         currentStep = restorePoint.createStepToRestore();
         currentState = CurrentState.DO_STEP;
+        lastSuppliedData = restorePoint.stepData;
         //we support only one step back right now
         restorePoint = null;
         console.println(currentStep.getInitialQuestion());
@@ -160,10 +162,11 @@ public class InteractiveConsoleProcessor {
     private void switchToNextStep(StepType nextStepType) {
         InteractiveStep nextStepImpl = findSuitableImplementation(nextStepType);
         StepData collectedData = currentStep.getCollectedData();
+        restorePoint = new RestorePoint(currentStep.getStepType(), lastSuppliedData);
         currentStep = nextStepImpl;
+        lastSuppliedData = collectedData;
         currentStep.supplyInitialData(collectedData);
         currentState = CurrentState.DO_STEP;
-        restorePoint = new RestorePoint(nextStepType, collectedData);
         console.println(currentStep.getInitialQuestion());
     }
 

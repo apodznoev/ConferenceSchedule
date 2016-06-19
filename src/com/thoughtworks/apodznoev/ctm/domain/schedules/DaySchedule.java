@@ -12,4 +12,8 @@ public class DaySchedule {
     public DaySchedule(List<TrackSchedule> tracks) {
         this.tracks = tracks;
     }
+
+    public List<TrackSchedule> getTracks() {
+        return tracks;
+    }
 }

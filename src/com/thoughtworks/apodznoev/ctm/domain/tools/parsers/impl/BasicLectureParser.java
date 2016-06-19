@@ -9,9 +9,9 @@ import com.thoughtworks.apodznoev.ctm.domain.tools.parsers.LectureParser;
  * @since 19/06/16
  */
 public class BasicLectureParser implements LectureParser {
-    private static final String LIGHTNING_KEYWORD = "lightning";
-    private static final int LIGHTNING_DURATION_MINUTES = 5;
-    private static final String MINUTES_KEYWORD = "min";
+    public static final String LIGHTNING_KEYWORD = "lightning";
+    public static final int LIGHTNING_DURATION_MINUTES = 5;
+    public static final String MINUTES_KEYWORD = "min";
 
     @Override
     public Lecture parse(String line) throws LectureParseException {
@@ -37,7 +37,7 @@ public class BasicLectureParser implements LectureParser {
         }
 
         if (!duration.contains(MINUTES_KEYWORD)) {
-            throw new LectureParseException("Cannot find minutes keyword:" + duration);
+            throw new LectureParseException("Cannot find minutes keyword in '" + duration+"'");
         }
 
         if (!duration.endsWith(MINUTES_KEYWORD)) {

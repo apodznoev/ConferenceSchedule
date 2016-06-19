@@ -7,7 +7,6 @@ import com.thoughtworks.apodznoev.ctm.domain.events.Networking;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,26 +53,24 @@ public class ConferenceScheduleComposingOptions {
         if (breaks.isEmpty())
             return;
 
-        BreakOption firstBreak = breaks.get(0);
-        if (conferenceStart.isAfter(firstBreak.start)) {
-            throw new IllegalStateException("First break cannot be before conference started");
-        }
-
-        LocalTime previousBreakEndTime = firstBreak.start.plus(
-                Duration.ofMinutes(firstBreak.event.getDurationMinutes())
-        );
+        LocalTime previousBreakEndTime = conferenceStart;
 
         for (BreakOption breakOption : breaks) {
             if (previousBreakEndTime.isAfter(breakOption.start)) {
                 throw new IllegalStateException("Next break cannot start before previous ended, but break:" +
                         breakOption.event + " starts before:" + previousBreakEndTime);
             }
+            previousBreakEndTime = previousBreakEndTime.plusMinutes(breakOption.event.getDurationMinutes());
         }
     }
 
     private void validateClosingEvent(LocalTime conferenceStart,
                                       List<BreakOption> breaks,
                                       FinalEventOption finalEvent) {
+        if (finalEvent == null) {
+            return;
+        }
+
         if (conferenceStart.isAfter(finalEvent.floatingStartMin)) {
             //todo overnight parties not supported yet
             throw new IllegalStateException("Final event cannot start before the conference");
@@ -115,11 +112,11 @@ public class ConferenceScheduleComposingOptions {
     }
 
     public LocalTime getFinalEventMinStart() {
-        return finalEvent.floatingStartMin;
+        return finalEvent == null ? LocalTime.of(23, 59) : finalEvent.floatingStartMin;
     }
 
     public LocalTime getFinalEventLastStart() {
-        return finalEvent.floatingStartMax;
+        return finalEvent == null ? LocalTime.of(23, 59) : finalEvent.floatingStartMax;
     }
 
     public List<Break> getBreaks() {
@@ -127,7 +124,7 @@ public class ConferenceScheduleComposingOptions {
     }
 
     public ClosingEvent getFinalEvent() {
-        return finalEvent.finalEvent;
+        return finalEvent == null ? null : finalEvent.event;
     }
 
     public static class Builder {
@@ -177,14 +174,14 @@ public class ConferenceScheduleComposingOptions {
     private static class FinalEventOption {
         private final LocalTime floatingStartMin;
         private final LocalTime floatingStartMax;
-        private final ClosingEvent finalEvent;
+        private final ClosingEvent event;
 
         private FinalEventOption(LocalTime floatingStartMin,
                                  LocalTime floatingStartMax,
-                                 ClosingEvent finalEvent) {
+                                 ClosingEvent event) {
             this.floatingStartMin = floatingStartMin;
             this.floatingStartMax = floatingStartMax;
-            this.finalEvent = finalEvent;
+            this.event = event;
         }
     }
 

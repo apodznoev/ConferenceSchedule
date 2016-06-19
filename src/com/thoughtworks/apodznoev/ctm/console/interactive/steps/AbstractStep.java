@@ -20,12 +20,16 @@ public abstract class AbstractStep implements InteractiveStep {
     }
 
     protected void printYesNoQuestion() {
-        console.println("Type [Y/n]:");
+        console.println(getYesNoQuestion());
+    }
+
+    protected String getYesNoQuestion() {
+        return "Type [Y/n]:";
     }
 
 
     protected static boolean parseYesNo(String yesNoAnswer) {
-        if(yesNoAnswer.toLowerCase().equals("y")){
+        if (yesNoAnswer.toLowerCase().equals("y")) {
             return true;
         }
 

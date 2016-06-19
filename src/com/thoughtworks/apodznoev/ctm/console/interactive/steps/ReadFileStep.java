@@ -104,6 +104,7 @@ public class ReadFileStep extends AbstractStep {
             return false;
         }
 
+        //noinspection SimplifiableIfStatement
         if (!ignoreSize) {
             return validateFileSize(file);
         }
@@ -121,6 +122,7 @@ public class ReadFileStep extends AbstractStep {
         }
 
         if (fileSize >= FILE_SIZE_WARNING_THRESHOLD) {
+            stepState = CurrentState.SIZE_CONFIRMATION;
             console.println("Passed file has a size:" + readableFileSize(fileSize) +
                     ", do you really want to continue?");
             printYesNoQuestion();
@@ -136,7 +138,7 @@ public class ReadFileStep extends AbstractStep {
     }
 
     @Override
-    public StepData getCollectedData() {
+    public FilePathStepData getCollectedData() {
         return stepData;
     }
 

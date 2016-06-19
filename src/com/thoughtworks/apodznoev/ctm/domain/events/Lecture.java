@@ -28,4 +28,13 @@ public class Lecture implements Event {
     public String getSpeaker(){
         return speaker;
     }
+
+    @Override
+    public String toString() {
+        return "Lecture{" +
+                "title='" + title + '\'' +
+                ", speaker='" + speaker + '\'' +
+                ", duration=" + durationMinutes +
+                '}';
+    }
 }

@@ -20,4 +20,11 @@ public class Lunch implements Break {
     public int getDurationMinutes() {
         return lunchDuration;
     }
+
+    @Override
+    public String toString() {
+        return "Lunch{" +
+                "lunchDuration=" + lunchDuration +
+                '}';
+    }
 }

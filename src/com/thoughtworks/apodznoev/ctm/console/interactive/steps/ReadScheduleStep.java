@@ -6,10 +6,12 @@ import com.thoughtworks.apodznoev.ctm.console.interactive.stepdata.StepData;
 import java.io.PrintWriter;
 
 /**
+ * todo not implemented yes, but should allow to read the formed by export schedule
+ *
  * @author apodznoev
  * @since 18/06/16
  */
-public class ReadScheduleStep extends AbstractStep {
+public class ReadScheduleStep extends NotImplementedStep {
     public ReadScheduleStep(PrintWriter userPromter) {
         super(userPromter);
     }
@@ -19,29 +21,4 @@ public class ReadScheduleStep extends AbstractStep {
         return StepType.READ_SCHEDULE;
     }
 
-    @Override
-    public String getInitialQuestion() {
-        return "todo here ask for question";
-    }
-
-    @Override
-    public void supplyInitialData(StepData initialData) {
-
-    }
-
-    @Override
-    public void doStep(String userInput) {
-        console.println("Echo:" + userInput);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return true;
-    }
-
-    @Override
-    public StepData getCollectedData() {
-        return new StepData() {
-        };
-    }
 }

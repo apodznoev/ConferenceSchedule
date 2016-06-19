@@ -14,9 +14,9 @@ import com.thoughtworks.apodznoev.ctm.domain.schedules.TrackSchedule;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -66,8 +66,7 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
         LocalTime previousBreakEnd = options.getConferenceStart();
         for (int i = 0; i < options.getBreaksCount(); i++) {
             LocalTime newBreakStart = options.getBreakStart(i);
-            int durationBetweenBreaks = (int) Duration.between(previousBreakEnd, newBreakStart)
-                    .get(ChronoUnit.MINUTES);
+            int durationBetweenBreaks = getMinutesDuration(previousBreakEnd, newBreakStart);
             maxAllowedDurationMinutes = Math.max(maxAllowedDurationMinutes, durationBetweenBreaks);
 
             int breakDuration = options.getBreak(i).getDurationMinutes();
@@ -75,15 +74,19 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
         }
 
         maxAllowedDurationMinutes = Math.max(maxAllowedDurationMinutes,
-                (int) Duration.between(previousBreakEnd, options.getFinalEventLastStart())
-                        .get(ChronoUnit.MINUTES));
+                getMinutesDuration(previousBreakEnd, options.getFinalEventLastStart())
+        );
 
         return maxAllowedDurationMinutes;
     }
 
+    private static int getMinutesDuration(LocalTime start, LocalTime end) {
+        return (int) TimeUnit.SECONDS.toMinutes(Duration.between(start, end).get(ChronoUnit.SECONDS));
+    }
+
     private List<TrackSchedule> composeTracks(List<Lecture> lectures) throws ConferenceScheduleComposeException {
-        //sort by duration to apply greedy algorithm
-        Collections.sort(lectures, (o1, o2) -> Integer.compare(o1.getDurationMinutes(), o2.getDurationMinutes()));
+        //sort by duration DESC to apply greedy algorithm
+        Collections.sort(lectures, (o1, o2) -> Integer.compare(o2.getDurationMinutes(), o1.getDurationMinutes()));
 
         List<TrackBuilder> trackBuilders = new ArrayList<>();
         TrackBuilder tb;
@@ -136,14 +139,12 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
             sessions = new ArrayList<>(options.getBreaksCount() + 1);
             LocalTime start = options.getConferenceStart();
             for (int i = 0; i < options.getBreaksCount(); i++) {
-                int sessionDuration = (int) Duration.between(start, options.getBreakStart(i))
-                        .get(ChronoUnit.MINUTES);
+                int sessionDuration = getMinutesDuration(start, options.getBreakStart(i));
                 sessions.add(new Session(sessionDuration));
                 start = options.getBreakStart(i).plusMinutes(options.getBreak(i).getDurationMinutes());
             }
 
-            int lastSessionDuration = (int) Duration.between(start, options.getFinalEventLastStart())
-                    .get(ChronoUnit.MINUTES);
+            int lastSessionDuration = getMinutesDuration(start, options.getFinalEventLastStart());
             sessions.add(new Session(lastSessionDuration));
             trackStart = options.getConferenceStart();
             breaks = options.getBreaks();
@@ -152,23 +153,21 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
         }
 
         public boolean tryAdd(Lecture lecture) {
-            int sessionNumToProbe = lastFilledSession++;
             int attemptsCounter = 0;
 
             while (true) {
-                if (attemptsCounter == sessions.size()) {
-                    return false;
-                }
+                lastFilledSession = ++lastFilledSession % sessions.size();
 
-                sessionNumToProbe = sessionNumToProbe % sessions.size();
-
-                Session sessionToFill = sessions.get(sessionNumToProbe);
+                Session sessionToFill = sessions.get(lastFilledSession);
                 if (sessionToFill.tryAdd(lecture)) {
                     return true;
                 }
 
                 attemptsCounter++;
-                sessionNumToProbe++;
+
+                if (attemptsCounter == sessions.size()) {
+                    return false;
+                }
             }
         }
 
@@ -178,27 +177,27 @@ public class SingleDayConferenceScheduleComposer implements ConferenceScheduleCo
         }
 
         public TrackSchedule build() {
-            TreeMap<Integer, Event> schedule = new TreeMap<>();
+            TreeMap<LocalTime, Event> schedule = new TreeMap<>();
             LocalTime start = trackStart;
             int breakNumber = 0;
-            for(Session session : sessions) {
-                for(Lecture lecture : session.lectures) {
-                    schedule.put(start.get(ChronoField.MINUTE_OF_DAY), lecture);
-                    start.plusMinutes(lecture.getDurationMinutes());
+            for (Session session : sessions) {
+                for (Lecture lecture : session.lectures) {
+                    schedule.put(start, lecture);
+                    start = start.plusMinutes(lecture.getDurationMinutes());
                 }
-                start.plusMinutes(session.remainingMinutes);
-                if(breakNumber != breaks.size()) {
+                if (breakNumber != breaks.size()) {
+                    start = start.plusMinutes(session.remainingMinutes);
                     Break breakBetweenSessions = breaks.get(breakNumber);
-                    schedule.put(start.get(ChronoField.MINUTE_OF_DAY), breakBetweenSessions);
-                    start.plusMinutes(breakBetweenSessions.getDurationMinutes());
+                    schedule.put(start, breakBetweenSessions);
+                    start = start.plusMinutes(breakBetweenSessions.getDurationMinutes());
                     breakNumber++;
                 }
             }
 
-            int finalEventTime = Math.max(
-                    finalEventStartMin.get(ChronoField.MINUTE_OF_DAY), start.get(ChronoField.MINUTE_OF_DAY)
-            );
-            schedule.put(finalEventTime, finalEvent);
+            if (finalEvent != null) {
+                LocalTime finalEventTime = Collections.max(Arrays.asList(finalEventStartMin, start));
+                schedule.put(finalEventTime, finalEvent);
+            }
 
             return new TrackSchedule(
                     ConferenceRandomizer.randomRoom(),

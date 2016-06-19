@@ -6,11 +6,18 @@ import com.thoughtworks.apodznoev.ctm.domain.builders.impl.BasicConferenceSchedu
 import com.thoughtworks.apodznoev.ctm.domain.builders.impl.ConferenceScheduleComposingOptions;
 import com.thoughtworks.apodznoev.ctm.domain.events.Lunch;
 import com.thoughtworks.apodznoev.ctm.domain.events.Networking;
+import com.thoughtworks.apodznoev.ctm.domain.schedules.ConferenceSchedule;
+import com.thoughtworks.apodznoev.ctm.domain.tools.export.ConsoleObjectWritersFactory;
+import com.thoughtworks.apodznoev.ctm.domain.tools.export.FileObjectWritersFactory;
+import com.thoughtworks.apodznoev.ctm.domain.tools.export.WriteOptions;
+import com.thoughtworks.apodznoev.ctm.domain.tools.export.impl.BasicConsoleWritersFactory;
+import com.thoughtworks.apodznoev.ctm.domain.tools.export.impl.BasicFileWritersFactory;
 import com.thoughtworks.apodznoev.ctm.domain.tools.parsers.LectureParserFactory;
 import com.thoughtworks.apodznoev.ctm.domain.tools.parsers.impl.BasicLectureParserFactory;
 
 import java.io.PrintWriter;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * todo
@@ -22,10 +29,14 @@ public class SingleStepPerTypeFactory implements StepsFactory {
     private final PrintWriter userPrompter;
     private final LectureParserFactory lectureParserFactory;
     private final ConferenceScheduleComposerFactory scheduleComposerFactory;
+    private final ConsoleObjectWritersFactory consoleWritersFactory;
+    private final FileObjectWritersFactory fileWritersFactory;
 
     public SingleStepPerTypeFactory(PrintWriter prompter) {
         this.userPrompter = prompter;
+
         lectureParserFactory = new BasicLectureParserFactory();
+
         scheduleComposerFactory = new BasicConferenceScheduleFactory()
                 .setComposingOptions(new ConferenceScheduleComposingOptions.Builder()
                         .randomize(true)
@@ -33,6 +44,21 @@ public class SingleStepPerTypeFactory implements StepsFactory {
                         .addBreak(LocalTime.of(12, 0), new Lunch(60))
                         .addFinalEvent(LocalTime.of(16, 0), LocalTime.of(17, 0), new Networking())
                         .build());
+
+        consoleWritersFactory = new BasicConsoleWritersFactory()
+                .setWriteOptions(
+                        new WriteOptions.Builder()
+                                .setDayTimeFormat(DateTimeFormatter.ofPattern("hh:mma"))
+                                .setDateFormat(DateTimeFormatter.ofPattern("dd.MM.YYYY"))
+                                .build());
+
+        fileWritersFactory = new BasicFileWritersFactory()
+                .setWriteOptions(
+                        new WriteOptions.Builder()
+                                .setDayTimeFormat(DateTimeFormatter.ofPattern("hh:mma"))
+                                .setDateFormat(DateTimeFormatter.ofPattern("dd.MM.YYYY"))
+                                .build()
+                );
     }
 
     @Override
@@ -49,7 +75,10 @@ public class SingleStepPerTypeFactory implements StepsFactory {
             case READ_FILE:
                 return new ReadFileStep(userPrompter);
             case EXPORT_SCHEDULE:
-                return new ExportScheduleStep(userPrompter);
+                return new ExportScheduleStep(userPrompter,
+                        consoleWritersFactory.createConsoleWriter(ConferenceSchedule.class),
+                        fileWritersFactory.createFileWriter(ConferenceSchedule.class)
+                );
             case READ_SCHEDULE:
                 return new ReadScheduleStep(userPrompter);
             default:

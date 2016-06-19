@@ -51,7 +51,7 @@ public class CreateScheduleStep extends AbstractStep {
     @Override
     public String getInitialQuestion() {
         return "Do you wish to create a Conference Schedule from file: '"
-                + lecturesFile.toString() + "'?";
+                + lecturesFile.toString() + "'?\n" + getYesNoQuestion();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class CreateScheduleStep extends AbstractStep {
     }
 
     @Override
-    public StepData getCollectedData() {
+    public ScheduleStepData getCollectedData() {
         return new ScheduleStepData(result);
     }
 
@@ -69,7 +69,7 @@ public class CreateScheduleStep extends AbstractStep {
         if (!(initialData instanceof FilePathStepData)) {
             throw new IllegalStateException(
                     "Unexpected initial data, expected to be " + FilePathStepData.class +
-                            " but is: " + initialData.getClass()
+                            " but is: " + (initialData == null ? null : initialData.getClass())
             );
         }
 
@@ -110,7 +110,7 @@ public class CreateScheduleStep extends AbstractStep {
             //todo validation of same-title lectures omitted for now
             result = scheduleComposer.composeSchedule(getInfo(), lectures);
         } catch (ConferenceScheduleComposeException e){
-            console.println("Cannot compose schedule due to:" + e.getMessage());
+            console.println(e.getMessage());
             return false;
         }
 
@@ -151,6 +151,7 @@ public class CreateScheduleStep extends AbstractStep {
                         "Line: #%d '%s' due to: '%s'",
                         parseError.lineNumber, parseError.originalLine, parseError.error
                 )));
+                stepState = CurrentState.CONFIRM_ERRORS;
                 console.println("Do you wish to continue?");
                 printYesNoQuestion();
                 return false;

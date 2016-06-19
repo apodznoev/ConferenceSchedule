@@ -12,4 +12,8 @@ public class ScheduleStepData implements StepData {
     public ScheduleStepData(ConferenceSchedule schedule) {
         this.schedule = schedule;
     }
+
+    public ConferenceSchedule getSchedule() {
+        return schedule;
+    }
 }

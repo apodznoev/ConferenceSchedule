@@ -18,4 +18,12 @@ public class ConferenceSchedule {
         this.conferenceInfo = conferenceInfo;
         this.daySchedules = daySchedules;
     }
+
+    public ConferenceInfo getConferenceInfo() {
+        return conferenceInfo;
+    }
+
+    public List<DaySchedule> getDaySchedules() {
+        return daySchedules;
+    }
 }

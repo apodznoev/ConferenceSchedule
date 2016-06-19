@@ -14,4 +14,12 @@ public class ConferenceInfo {
         this.conferenceName = conferenceName;
         this.conferenceStartDay = conferenceStartDay;
     }
+
+    public String getConferenceName() {
+        return conferenceName;
+    }
+
+    public LocalDate getConferenceStartDay() {
+        return conferenceStartDay;
+    }
 }

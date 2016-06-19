@@ -43,6 +43,7 @@ public class ConsoleLauncher {
             try {
                 processor.processInput(input);
             } catch (Exception e) {
+                e.printStackTrace();
                 writer.println("Unexpected exception, will terminate immediately");
                 break;
             }
